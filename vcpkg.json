@@ -1,0 +1,8 @@
+{
+  "name": "gradebook",
+  "version": "0.00",
+  "description": "A grade book to handle grades of students",
+  "homepage": "https://github.com/NestorNebula/gradebook",
+  "documentation": "htpps://github.com/NestorNebula/gradebook/blob/main/README.md",
+  "license": "MIT"
+}
