@@ -27,6 +27,7 @@ typedef struct test_type {
   char description[ML_TEST_DESCRIPTION+1];
   int max_score;
   char date[L_TEST_DATE+1];
+  int class_id;
 } *Test;
 
 typedef struct grade_type {
