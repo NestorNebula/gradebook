@@ -8,6 +8,7 @@ project(gradebook-tests
 
 file(GLOB tests *.cpp)
 add_executable(gradebook-tests ${tests})
+target_include_directories(gradebook-tests PRIVATE ../include)
 
 file(GLOB src_files ../src/*.c)
 add_library(src ${src_files})
@@ -15,4 +16,4 @@ target_include_directories(src PRIVATE ../include)
 
 find_package(GTest CONFIG REQUIRED)
 enable_testing()
-target_link_libraries(gradebook-tests GTest::gtest_main src)
+target_link_libraries(gradebook-tests GTest::gtest_main src sqlite3)
