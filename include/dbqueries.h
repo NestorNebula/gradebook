@@ -22,7 +22,7 @@
  * Inserts a new class in the database using the informations 
  * stored in class.
  */
-int create_class(Class class);
+int create_class(Class cla);
 
 /*
  * find_classes:
@@ -37,13 +37,13 @@ Class *find_classes(bool with_students, bool with_tests);
  * Updates the class stored in the database that has the same id as class
  * using the informations stored in class.
  */
-int update_class(Class class);
+int update_class(Class cla);
 
 /*
  * delete_class:
  * Deletes the class stored in the database that has the same id as class.
  */
-int delete_class(Class class);
+int delete_class(Class cla);
 
 /*
  * create_student:
