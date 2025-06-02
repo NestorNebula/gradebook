@@ -8,7 +8,7 @@ project(gradebook-tests
 
 file(GLOB tests *.cpp)
 add_executable(gradebook-tests ${tests})
-target_include_directories(gradebook-tests PRIVATE ../include)
+target_include_directories(gradebook-tests PRIVATE ../include ../lib/fff)
 
 file(GLOB src_files ../src/*.c)
 add_library(src ${src_files})
