@@ -16,4 +16,4 @@ target_include_directories(src PRIVATE ../include)
 
 find_package(GTest CONFIG REQUIRED)
 enable_testing()
-target_link_libraries(gradebook-tests GTest::gtest_main src sqlite3)
+target_link_libraries(gradebook-tests GTest::gtest src sqlite3)
