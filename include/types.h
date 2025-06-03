@@ -16,7 +16,7 @@ typedef struct grade_type {
   int score;
   Id student_id;
   Id test_id;
-} *Grade;
+} *Grade_p;
 
 typedef struct test_type {
   Id id;
@@ -25,23 +25,23 @@ typedef struct test_type {
   int max_score;
   char date[L_TEST_DATE+1];
   Id class_id;
-  Grade *grades;
-} *Test;
+  Grade_p *grades;
+} *Test_p;
 
 typedef struct student_type {
   Id id;
   char first_name[ML_STUDENT_NAME+1];
   char last_name[ML_STUDENT_NAME+1];
   Id class_id;
-  Grade *grades;
-} *Student;
+  Grade_p *grades;
+} *Student_p;
 
 typedef struct class_type {
   Id id;
   char name[ML_CLASS_NAME+1];
   char year[L_CLASS_YEAR+1];
-  Student *students;
-  Test *tests;
-} *Class;
+  Student_p *students;
+  Test_p *tests;
+} *Class_p;
 
 #endif
