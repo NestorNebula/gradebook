@@ -13,7 +13,7 @@
 typedef unsigned int Id;
 
 typedef struct grade_type {
-  int score;
+  int *score;
   Id student_id;
   Id test_id;
 } *Grade_p;
