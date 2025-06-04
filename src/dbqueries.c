@@ -82,8 +82,32 @@ int update_class(Class_p class_p) {
 }
 
 int delete_class(Class_p class_p) {
-  sprintf(sql, "DELETE FROM classes WHERE id = %d;", class_p->id);
+  sprintf(sql, "DELETE FROM grades JOIN students ON grades.student_id = "
+          "students.id JOIN tests ON grade.test_id = tests.id "
+          "WHERE students.class_id = %d OR tests.class_id = %d;", 
+          class_p->id, class_p->id);
   int rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
+  if (errmsg != NULL) {
+    handle_errmsg("Error when deleting class' grades");
+    return rc;
+  }
+
+  sprintf(sql, "DELETE FROM tests WHERE class_id = %d;", class_p->id);
+  rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
+  if (errmsg != NULL) {
+    handle_errmsg("Error when deleting class' tests");
+    return rc;
+  }
+
+  sprintf(sql, "DELETE FROM students WHERE class_id = %d;", class_p->id);
+  rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
+  if (errmsg != NULL) {
+    handle_errmsg("Error when deleting class' students");
+    return rc;
+  }
+
+  sprintf(sql, "DELETE FROM classes WHERE id = %d;", class_p->id);
+  rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
   handle_errmsg("Error when deleting class");
   return rc;
 }
@@ -145,8 +169,15 @@ int update_student(Student_p student_p) {
 }
 
 int delete_student(Student_p student_p) {
-  sprintf(sql, "DELETE FROM students WHERE id = %d;", student_p->id);
+  sprintf(sql, "DELETE FROM grades WHERE student_id = %d;", student_p->id);
   int rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
+  if (errmsg != NULL) {
+    handle_errmsg("Error when deleting student's grades");
+    return rc;
+  }
+
+  sprintf(sql, "DELETE FROM students WHERE id = %d;", student_p->id);
+  rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
   handle_errmsg("Error when deleting student");
   return rc;
 }
@@ -214,8 +245,15 @@ int update_test(Test_p test_p) {
 }
 
 int delete_test(Test_p test_p) {
-  sprintf(sql, "DELETE FROM tests WHERE id = %d;", test_p->id);
+  sprintf(sql, "DELETE FROM grades WHERE test_id = %d;", test_p->id);
   int rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
+  if (errmsg != NULL) {
+    handle_errmsg("Error when deleting test's grades");
+    return rc;
+  }
+
+  sprintf(sql, "DELETE FROM tests WHERE id = %d;", test_p->id);
+  rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
   handle_errmsg("Error when deleting test");
   return rc;
 }
