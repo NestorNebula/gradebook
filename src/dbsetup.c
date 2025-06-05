@@ -1,7 +1,7 @@
 #include <sqlite3.h>
 #include "dbsetup.h"
 
-#define DB_FILE "gradebook.db"
+#define DB_FILE "../db/gradebook.db"
 
 sqlite3* db;
 
