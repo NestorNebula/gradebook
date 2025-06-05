@@ -8,7 +8,6 @@
 #define DEF_ARR_SIZE 1
 
 extern sqlite3 *db;
-sqlite3_stmt *stmt;
 char sql[ML_SQL+1];
 char *errmsg = NULL;
 
@@ -26,7 +25,7 @@ static void handle_errmsg(const char *description);
  * using this function.
  * If found, returns the index of the column, else returns -1.
  */
-static int find_column(const char *name);
+static int find_column(const char *name, sqlite3_stmt *stmt);
 
 int create_class(Class_p class_p) {
   sprintf(sql, "INSERT INTO classes (name, year) VALUES ('%s', '%s');",
@@ -38,6 +37,7 @@ int create_class(Class_p class_p) {
 
 Class_p *find_classes(bool with_students, bool with_tests) {
   sprintf(sql, "SELECT * FROM classes;");
+  sqlite3_stmt *stmt;
   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 
   Class_p *classes = malloc(sizeof(Class_p) * DEF_ARR_SIZE);
@@ -52,11 +52,11 @@ Class_p *find_classes(bool with_students, bool with_tests) {
     }
     Class_p class_row = malloc(sizeof(struct class_type));
     if (class_row == NULL) break;
-    class_row->id = sqlite3_column_int(stmt, find_column("id"));
+    class_row->id = sqlite3_column_int(stmt, find_column("id", stmt));
     strcpy(class_row->name, 
-      (const char *) sqlite3_column_text(stmt, find_column("name")));
+      (const char *) sqlite3_column_text(stmt, find_column("name", stmt)));
     strcpy(class_row->year, 
-      (const char *) sqlite3_column_text(stmt, find_column("year")));
+      (const char *) sqlite3_column_text(stmt, find_column("year", stmt)));
     class_row->students = with_students 
       ? find_students(&class_row->id, false)
       : NULL;
@@ -127,6 +127,7 @@ Student_p *find_students(Id *class_id, bool with_grades) {
   } else {
     sprintf(sql, "SELECT * FROM students;");
   }
+  sqlite3_stmt *stmt;
   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 
   Student_p *students = malloc(sizeof(Student_p) * DEF_ARR_SIZE);
@@ -141,12 +142,15 @@ Student_p *find_students(Id *class_id, bool with_grades) {
     }
     Student_p student_row = malloc(sizeof(struct student_type));
     if (student_row == NULL) break;
-    student_row->id = sqlite3_column_int(stmt, find_column("id"));
+    student_row->id = sqlite3_column_int(stmt, find_column("id", stmt));
     strcpy(student_row->first_name, 
-      (const char *) sqlite3_column_text(stmt, find_column("first_name")));
+      (const char *) sqlite3_column_text(stmt, 
+                                         find_column("first_name", stmt)));
     strcpy(student_row->last_name,
-      (const char *) sqlite3_column_text(stmt, find_column("last_name")));
-    student_row->class_id = sqlite3_column_int(stmt, find_column("class_id"));
+      (const char *) sqlite3_column_text(stmt, 
+                                         find_column("last_name", stmt)));
+    student_row->class_id = sqlite3_column_int(stmt,
+                                               find_column("class_id", stmt));
     student_row->grades = with_grades 
       ? find_grades(&student_row->id, NULL)
       : NULL;
@@ -199,6 +203,7 @@ Test_p *find_tests(Id *class_id, bool with_grades) {
   } else {
     sprintf(sql, "SELECT * FROM tests;");
   }
+  sqlite3_stmt *stmt;
   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 
   Test_p *tests_arr = malloc(sizeof(Test_p) * DEF_ARR_SIZE);
@@ -213,15 +218,18 @@ Test_p *find_tests(Id *class_id, bool with_grades) {
     }
     Test_p test_row = malloc(sizeof(struct test_type));
     if (test_row == NULL) break;
-    test_row->id = sqlite3_column_int(stmt, find_column("id"));
+    test_row->id = sqlite3_column_int(stmt, find_column("id", stmt));
     strcpy(test_row->name, 
-      (const char *) sqlite3_column_text(stmt, find_column("name")));
+      (const char *) sqlite3_column_text(stmt, find_column("name", stmt)));
     strcpy(test_row->description, 
-      (const char *) sqlite3_column_text(stmt, find_column("description")));
-    test_row->max_score =  sqlite3_column_int(stmt, find_column("max_score"));
+      (const char *) sqlite3_column_text(stmt, 
+                                         find_column("description", stmt)));
+    test_row->max_score =  sqlite3_column_int(stmt, 
+                                              find_column("max_score", stmt));
     strcpy(test_row->date, 
-      (const char *) sqlite3_column_text(stmt, find_column("date")));
-    test_row->class_id = sqlite3_column_int(stmt, find_column("class_id"));
+      (const char *) sqlite3_column_text(stmt, find_column("date", stmt)));
+    test_row->class_id = sqlite3_column_int(stmt, 
+                                            find_column("class_id", stmt));
     test_row->grades = with_grades
       ? find_grades(NULL, &test_row->id)
       : NULL;
@@ -279,6 +287,7 @@ Grade_p *find_grades(Id *student_id, Id *test_id) {
           student_id != NULL ? *student_id : 0,
           test_id != NULL ? "=" : "!=",
           test_id != NULL ? *test_id : 0);
+  sqlite3_stmt *stmt;
   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 
   Grade_p *grades = malloc(sizeof(Grade_p) * DEF_ARR_SIZE);
@@ -293,19 +302,19 @@ Grade_p *find_grades(Id *student_id, Id *test_id) {
     }
     Grade_p grade_row = malloc(sizeof(struct grade_type));
     if (grade_row== NULL) break;
-    if (sqlite3_column_type(stmt, find_column("score")) == SQLITE_NULL) {
+    if (sqlite3_column_type(stmt, find_column("score", stmt)) == SQLITE_NULL) {
       grade_row->score = NULL;
     } else {
       int *score = malloc(sizeof(int));
       if (score) {
-        *score = sqlite3_column_int(stmt, find_column("score"));
+        *score = sqlite3_column_int(stmt, find_column("score", stmt));
       }
       grade_row->score = score;
     }
     grade_row->student_id = 
-      sqlite3_column_int(stmt, find_column("student_id"));
+      sqlite3_column_int(stmt, find_column("student_id", stmt));
     grade_row->test_id =
-      sqlite3_column_int(stmt, find_column("test_id"));
+      sqlite3_column_int(stmt, find_column("test_id", stmt));
     grades[length++] = grade_row;
   }
   grades[length] = NULL;
@@ -345,7 +354,7 @@ static void handle_errmsg(const char *description) {
   }
 }
 
-static int find_column(const char *name) {
+static int find_column(const char *name, sqlite3_stmt *stmt) {
   int column_count = sqlite3_column_count(stmt);
   for (int i = 0; i < column_count; i++) {
     if (!strcmp(sqlite3_column_name(stmt, i), name)) return i;
