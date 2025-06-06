@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS tests (
 );
 
 CREATE TABLE IF NOT EXISTS grades (
-  score INTEGER,
+  score REAL,
   student_id INTEGER NOT NULL,
-  test_id NOT NULL,
+  test_id INTEGER NOT NULL,
   FOREIGN KEY(student_id) REFERENCES students(id),
   FOREIGN KEY(test_id) REFERENCES tests(id),
   UNIQUE(student_id, test_id)
