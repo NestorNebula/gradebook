@@ -11,9 +11,10 @@
 #define L_TEST_DATE 10
 
 typedef unsigned int Id;
+typedef float Score;
 
 typedef struct grade_type {
-  int *score;
+  Score *score;
   Id student_id;
   Id test_id;
 } *Grade_p;

@@ -268,11 +268,11 @@ int delete_test(Test_p test_p) {
 
 int create_grade(Grade_p grade_p) {
   if (grade_p->score != NULL) {
-    sprintf(sql, "INSERT INTO grade (score, student_id, test_id) "
-            "VALUES (%d, %d, %d);",
+    sprintf(sql, "INSERT INTO grades (score, student_id, test_id) "
+            "VALUES (%f, %d, %d);",
             *grade_p->score, grade_p->student_id, grade_p->test_id);
   } else {
-    sprintf(sql, "INSERT INTO grade (student_id, test_id) VALUES (%d, %d);",
+    sprintf(sql, "INSERT INTO grades (student_id, test_id) VALUES (%d, %d);",
             grade_p->student_id, grade_p->test_id);
   }
   int rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
@@ -305,9 +305,9 @@ Grade_p *find_grades(Id *student_id, Id *test_id) {
     if (sqlite3_column_type(stmt, find_column("score", stmt)) == SQLITE_NULL) {
       grade_row->score = NULL;
     } else {
-      int *score = malloc(sizeof(int));
+      Score *score = malloc(sizeof(Score));
       if (score) {
-        *score = sqlite3_column_int(stmt, find_column("score", stmt));
+        *score = sqlite3_column_double(stmt, find_column("score", stmt));
       }
       grade_row->score = score;
     }
@@ -326,7 +326,7 @@ Grade_p *find_grades(Id *student_id, Id *test_id) {
 
 int update_grade(Grade_p grade_p) {
   if (grade_p->score != NULL) {
-    sprintf(sql, "UPDATE grades SET score = %d WHERE "
+    sprintf(sql, "UPDATE grades SET score = %f WHERE "
             "student_id = %d AND test_id = %d;",
             *grade_p->score, grade_p->student_id, grade_p->test_id);
   } else {
