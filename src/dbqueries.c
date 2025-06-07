@@ -82,9 +82,9 @@ int update_class(Class_p class_p) {
 }
 
 int delete_class(Class_p class_p) {
-  sprintf(sql, "DELETE FROM grades JOIN students ON grades.student_id = "
-          "students.id JOIN tests ON grade.test_id = tests.id "
-          "WHERE students.class_id = %d OR tests.class_id = %d;", 
+  sprintf(sql, "DELETE FROM grades WHERE student_id IN "
+          "(SELECT id FROM students WHERE class_id = %d) OR test_id IN "
+          "(SELECT id FROM tests WHERE class_id = %d);",
           class_p->id, class_p->id);
   int rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
   if (errmsg != NULL) {
