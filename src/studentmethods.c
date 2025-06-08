@@ -118,24 +118,33 @@ int c_student(void) {
     return 0;
   }
   
-  Student_p student_p = malloc(sizeof(struct student_type));
-  if (student_p == NULL) {
-    clear_classes(classes);
-    return 1;
-  }
-  student_p->class_id = class_id;
-  do {
-    printf("Enter student's first name: ");
-  } while (!read_string(student_p->first_name, ML_STUDENT_NAME+1, stdin));
-  do {
-    printf("Enter student's last name: ");
-  } while (!read_string(student_p->last_name, ML_STUDENT_NAME+1, stdin));
+  for (;;) {
+    Student_p student_p = malloc(sizeof(struct student_type));
+    if (student_p == NULL) {
+      clear_classes(classes);
+      return 1;
+    }
+    student_p->class_id = class_id;
+    do {
+      printf("Enter student's first name: ");
+    } while (!read_string(student_p->first_name, ML_STUDENT_NAME+1, stdin));
+    do {
+      printf("Enter student's last name: ");
+    } while (!read_string(student_p->last_name, ML_STUDENT_NAME+1, stdin));
 
-  int rc = create_student(student_p);
+    int rc = create_student(student_p);
+    clear_student(student_p);
+    if (rc != SQLITE_OK) {
+      clear_classes(classes);
+      return 1;
+    }
+    printf("\nStudent created\n");
+    
+    printf("\nDo you want to create another student (y/n) ? ");
+    if (!read_answer(stdin)) break;
+    printf("\n");
+  }
   clear_classes(classes);
-  clear_student(student_p);
-  if (rc != SQLITE_OK) return 1;
-  printf("\nStudent created\n");
   return 0;
 }
 
