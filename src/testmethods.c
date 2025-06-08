@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <sqlite3.h>
 #include "dbqueries.h"
 #include "input.h"
@@ -134,9 +133,7 @@ int u_test(void) {
     strcpy(test_p->description, new_description);
   } else if (test_p->description[0] != '\0') {
     printf("Clear previous description (y/n): ");
-    char answer[2];
-    read_string(answer, 2, stdin);
-    if (tolower(answer[0]) == 'y') {
+    if (read_answer(stdin)) {
       strcpy(test_p->description, "");
     }
   }

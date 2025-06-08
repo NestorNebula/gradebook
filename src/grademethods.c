@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <sqlite3.h>
 #include "dbqueries.h"
 #include "input.h"
@@ -201,10 +200,8 @@ int u_grade(void) {
   }
   Score *new_score = read_score(test_p->max_score);
   if (new_score == NULL && grade_p->score != NULL) {
-    char answer[2];
     printf("Clear previous score (y/n) ? ");
-    read_string(answer, 2, stdin);
-    if (tolower(answer[0]) == 'y') {
+    if (read_answer(stdin)) {
       grade_p->score = NULL;
     }
   } else grade_p->score = new_score;
