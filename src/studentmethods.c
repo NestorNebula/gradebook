@@ -13,7 +13,7 @@ int p_students(void) {
   if (*students == NULL) {
     printf("\nNo existing student\n");
   } else {
-    printf("\nStudents:\n");
+    printf("\nStudents:\n\n");
     for (Student_p *p = students; *p != NULL; p++) {
       printf("%s %s\n", (*p)->last_name, (*p)->first_name);
     }
@@ -60,7 +60,7 @@ int p_student(void) {
       printf("%s %s (%d)\n", (*p)->last_name, (*p)->first_name, (*p)->id);
     }
 
-    printf("Enter the student's id: ");
+    printf("\nEnter the student's id: ");
     Id id = read_number(&success, stdin);
     if (!success) {
       clear_classes(classes);

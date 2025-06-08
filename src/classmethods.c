@@ -13,7 +13,7 @@ int p_classes(void) {
   if (*classes == NULL) {
     printf("\nNo existing class\n");
   } else {
-    printf("\nClasses:\n");
+    printf("\nClasses:\n\n");
     for (Class_p *p = classes; *p != NULL; p++) {
       puts((*p)->name);
     }

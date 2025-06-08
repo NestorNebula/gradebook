@@ -20,7 +20,7 @@ int c_test(void) {
   for (Class_p *p = classes; *p != NULL; p++) {
     printf("%s (%d)\n", (*p)->name, (*p)->id);
   }
-  printf("Enter the test's class id: ");
+  printf("\nEnter the test's class id: ");
   bool success = false;
   Id class_id = read_number(&success, stdin);
   if (!success) {
