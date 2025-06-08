@@ -25,4 +25,11 @@ int read_number(bool *success, FILE *stream);
  */
 int read_string(char *output, int max_len, FILE *stream);
 
+/*
+ * read_answer:
+ * Reads the first character of stream.
+ * If the character is a Y (for "Yes"), returns true, else returns false.
+ */
+bool read_answer(FILE *stream);
+
 #endif
