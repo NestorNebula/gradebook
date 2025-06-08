@@ -42,12 +42,12 @@ void print_tests_grades(Test_p* tests, Grade_p *grades) {
   for (Test_p *p = tests; *p != NULL; p++, test_count++);
   for (int i = 0; i < test_count; i++) {
     if (grades[grade_index] == NULL) {
-      printf("%*s|", L_TEST_COL, "/");
+      printf("%*s|", L_TEST_COL, "");
     } else if 
       (tests[i]->id != grades[grade_index]->test_id) {
-      printf("%*s|", L_TEST_COL, "/");
+      printf("%*s|", L_TEST_COL, "");
     } else if (grades[grade_index]->score == NULL) {
-      printf("%*s|", L_TEST_COL, "/");
+      printf("%*s|", L_TEST_COL, "");
       grade_index++;
     } else {
       printf("%*g|", L_TEST_COL, *grades[grade_index++]->score);
