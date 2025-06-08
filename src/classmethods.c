@@ -50,6 +50,7 @@ int p_class(void) {
       return 1;
     }
 
+    printf("\n");
     print_table_header(class_p->name, class_p->tests);
     
     for (Student_p *p = class_p->students; *p != NULL; p++) {

@@ -79,6 +79,7 @@ int p_student(void) {
       return 1;
     }
 
+    printf("\n");
     print_table_header("Grades", class_p->tests);
     print_student_name(student_p);
     print_tests_grades(class_p->tests, student_p->grades);
