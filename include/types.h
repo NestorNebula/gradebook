@@ -45,12 +45,14 @@ typedef struct class_type {
   Test_p *tests;
 } *Class_p;
 
+typedef int (Method)(void);
+
 struct methods {
-  int (*create)(void);
-  int (*print)(void);
-  int (*print_all)(void);
-  int (*update)(void);
-  int (*delete)(void);
+  Method *create;
+  Method *print;
+  Method *print_all;
+  Method *update;
+  Method *del;
 };
 
 #endif
