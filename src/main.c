@@ -48,11 +48,12 @@ int main(void) {
       printf("%2d: %s\n", i + 1, options[i].description);
     }
 
-    printf("\nEnter your choice (0 to terminate): ");
-    bool success = false;
-    int choice = read_number(&success, stdin);
+    char choice_str[3];
+    printf("\nEnter your choice: ");
+    read_string(choice_str, 3, stdin);
+    int choice = atoi(choice_str);
     if (!choice) break;
-    if (!success || choice < 0 || choice > options_count) continue;
+    if (choice < 0 || choice > options_count) continue;
     choice--;
     int error = options[choice].function();
     if (error) {
@@ -60,8 +61,8 @@ int main(void) {
              "Terminating program\n");
     }
 
-    printf("\nType anything to continue: ");
-    read_answer(stdin);
+    printf("\nContinue (y/n) ? ");
+    if (!read_answer(stdin)) break;
   }
 
   close_db();
