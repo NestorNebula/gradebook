@@ -53,24 +53,6 @@ int c_grade(void) {
     return 0;
   }
 
-  printf("\nStudents (id):\n");
-  for (Student_p *p = class_p->students; *p != NULL; p++) {
-    printf("%s %s (%d)\n", (*p)->first_name, (*p)->last_name, (*p)->id);
-  }
-
-  printf("\nEnter grade's student id: ");
-  Id student_id = read_number(&success, stdin);
-  if (!success) {
-    clear_classes(classes);
-    return 0;
-  }
-
-  Student_p student_p = search_student(class_p->students, student_id);
-  if (student_p == NULL) {
-    clear_classes(classes);
-    return 0;
-  }
-
   printf("\nTests (id):\n");
   for (Test_p *p = class_p->tests; *p != NULL; p++) {
     printf("%s (%d)\n", (*p)->name, (*p)->id);
@@ -89,21 +71,48 @@ int c_grade(void) {
     return 0;
   }
 
-  Grade_p grade_p = malloc(sizeof(struct grade_type));
-  if (grade_p == NULL) {
-    clear_classes(classes);
-    return 1;
-  }
-  grade_p->student_id = student_id;
-  grade_p->test_id = test_id;
-  printf("Enter score (optional): ");
-  grade_p->score = read_score(test_p->max_score);
+  for (;;) {
+    printf("\nStudents (id):\n");
+    for (Student_p *p = class_p->students; *p != NULL; p++) {
+      printf("%s %s (%d)\n", (*p)->first_name, (*p)->last_name, (*p)->id);
+    }
 
-  int rc = create_grade(grade_p);
+    printf("\nEnter grade's student id: ");
+    Id student_id = read_number(&success, stdin);
+    if (!success) {
+      clear_classes(classes);
+      return 0;
+    }
+
+    Student_p student_p = search_student(class_p->students, student_id);
+    if (student_p == NULL) {
+      clear_classes(classes);
+      return 0;
+    }
+
+    Grade_p grade_p = malloc(sizeof(struct grade_type));
+    if (grade_p == NULL) {
+      clear_classes(classes);
+      return 1;
+    }
+    grade_p->student_id = student_id;
+    grade_p->test_id = test_id;
+    printf("Enter score (optional): ");
+    grade_p->score = read_score(test_p->max_score);
+
+    int rc = create_grade(grade_p);
+    clear_grade(grade_p);
+    if (rc != SQLITE_OK) {
+      clear_classes(classes);
+      return 1;
+    }
+    printf("\nGrade created\n");
+
+    printf("\nDo you want to enter another grade for this test (y/n) ? ");
+    if (!read_answer(stdin)) break;
+    printf("\n");
+  }
   clear_classes(classes);
-  clear_grade(grade_p);
-  if (rc != SQLITE_OK) return 1;
-  printf("\nGrade created\n");
   return 0;
 }
 
