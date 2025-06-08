@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "input.h"
 
 /*
@@ -23,6 +24,12 @@ int read_string(char *output, int max_len, FILE *stream) {
   output[i] = '\0';
   if (i == max_len - 1) clear_line(stream);
   return i;
+}
+
+bool read_answer(FILE *stream) {
+  int ch = getc(stream);
+  if (ch != '\n' && ch != EOF) clear_line(stream);
+  return tolower(ch) == 'y';
 }
 
 static void clear_line(FILE *stream) {
