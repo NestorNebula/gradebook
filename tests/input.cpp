@@ -77,3 +77,31 @@ TEST(read_string, clears_following_content_until_new_line) {
   EXPECT_EQ(strcmp(STR, output), 0);
   fclose(stream);
 }
+
+TEST(read_answer, returns_true_when_first_letter_is_y) {
+  FILE *stream = tmpfile();
+  fputs("yes", stream);
+  rewind(stream);
+
+  EXPECT_TRUE(read_answer(stream));
+  fclose(stream);
+}
+
+TEST(read_answer, returns_false_when_first_letter_is_not_y) {
+  FILE *stream = tmpfile();
+  fputs("no", stream);
+  rewind(stream);
+
+  EXPECT_FALSE(read_answer(stream));
+  fclose(stream);
+}
+
+TEST(read_answer, clears_following_content_until_new_line) {
+  FILE *stream = tmpfile();
+  fputs("yy\nn", stream);
+  rewind(stream);
+
+  EXPECT_TRUE(read_answer(stream));
+  EXPECT_FALSE(read_answer(stream));
+  fclose(stream);
+}
