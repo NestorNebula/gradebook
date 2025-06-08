@@ -17,7 +17,8 @@ void print_table_header(const char *title, Test_p *tests) {
   print_dividing_line(tests, '-');
   printf("|%*s |", L_NAME_COL - 1, title);
   for (Test_p *p = tests; *p != NULL; p++) {
-    printf("%*s|", L_TEST_COL, (*p)->name);
+    printf("%*s|", L_TEST_COL, 
+           strlen((*p)->name) > L_TEST_COL ? (*p)->date : (*p)->name);
   }
   printf("\n");
   print_dividing_line(tests, '|');
