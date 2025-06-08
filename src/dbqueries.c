@@ -4,7 +4,7 @@
 #include <string.h>
 #include "dbqueries.h"
 
-#define ML_SQL 200
+#define ML_SQL 500
 #define DEF_ARR_SIZE 1
 
 extern sqlite3 *db;
@@ -123,9 +123,10 @@ int create_student(Student_p student_p) {
 
 Student_p *find_students(Id *class_id, bool with_grades) {
   if (class_id != NULL) {
-    sprintf(sql, "SELECT * FROM students WHERE class_id = %d;", *class_id);
+    sprintf(sql, "SELECT * FROM students WHERE class_id = %d "
+            "ORDER BY last_name, first_name;", *class_id);
   } else {
-    sprintf(sql, "SELECT * FROM students;");
+    sprintf(sql, "SELECT * FROM students ORDER BY last_name, first_name;");
   }
   sqlite3_stmt *stmt;
   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
@@ -199,9 +200,11 @@ int create_test(Test_p test_p) {
 
 Test_p *find_tests(Id *class_id, bool with_grades) {
   if (class_id != NULL) {
-    sprintf(sql, "SELECT * FROM tests WHERE class_id = %d;", *class_id);
+    sprintf(sql, "SELECT *, unixepoch(date) AS time FROM tests "
+            "WHERE class_id = %d ORDER BY time;", *class_id);
   } else {
-    sprintf(sql, "SELECT * FROM tests;");
+    sprintf(sql, "SELECT *, unixepoch(date) AS time FROM tests "
+            "ORDER BY time;");
   }
   sqlite3_stmt *stmt;
   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
@@ -281,8 +284,11 @@ int create_grade(Grade_p grade_p) {
 }
 
 Grade_p *find_grades(Id *student_id, Id *test_id) {
-  sprintf(sql, "SELECT * FROM grades WHERE student_id %s %d AND "
-               "test_id %s %d;",
+  sprintf(sql, "SELECT *, unixepoch(tests.date) AS time FROM grades "
+          "JOIN students ON grades.student_id = students.id "
+          "JOIN tests ON grades.test_id = tests.id "
+          "WHERE student_id %s %d AND test_id %s %d "
+          "ORDER BY students.id, time;",
           student_id != NULL ? "=" : "!=",
           student_id != NULL ? *student_id : 0,
           test_id != NULL ? "=" : "!=",
