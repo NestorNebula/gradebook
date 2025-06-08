@@ -59,6 +59,9 @@ int main(void) {
       printf("\nAn error occurred during the execution of your request. "
              "Terminating program\n");
     }
+
+    printf("\nType anything to continue: ");
+    read_answer(stdin);
   }
 
   close_db();
