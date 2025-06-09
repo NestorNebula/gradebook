@@ -34,6 +34,8 @@ void print_student_name(Student_p student) {
     - (first_len > ML_NAME ? ML_NAME : first_len)
     - (last_len > ML_NAME ? ML_NAME : last_len) 
     - 1;
+
+  // Print blank characters to reach the end of name column
   while (remaining_len-- > 0) printf(" ");
   printf("|");
 }

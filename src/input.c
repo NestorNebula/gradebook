@@ -11,6 +11,8 @@ static void clear_line(FILE *stream);
 
 int read_number(bool *success, FILE *stream) {
   int num = 0;
+
+  // Success is set to the number of items read, which is always 1 or 0
   *success = fscanf(stream, "%d", &num);
   clear_line(stream);
   return num;
@@ -22,6 +24,9 @@ int read_string(char *output, int max_len, FILE *stream) {
     output[i++] = ch;
   }
   output[i] = '\0';
+
+  /* If the loop read the maximum number of characters, 
+     the end of line/file wasn't reached */
   if (i == max_len - 1) clear_line(stream);
   return i;
 }

@@ -18,6 +18,7 @@ struct methods
 int main(void) {
   printf("\nWelcome to your gradebook!\n");
 
+  // Associate each option with its function in a method structure
   struct option_type options[] = {
     { "Print all classes", class_methods.print_all },
     { "Print a class' detailed gradebook", class_methods.print },
@@ -48,13 +49,18 @@ int main(void) {
       printf("%2d: %s\n", i + 1, options[i].description);
     }
 
+    // Max choice is two digits long, giving the string a length of 3
     char choice_str[3];
     printf("\nEnter your choice: ");
     read_string(choice_str, 3, stdin);
     int choice = atoi(choice_str);
+
+    // Stop loop if choice is empty or not corresponding to any option
     if (!choice) break;
     if (choice < 0 || choice > options_count) continue;
     choice--;
+    
+    // Call function associated to option
     int error = options[choice].function();
     if (error) {
       printf("\nAn error occurred during the execution of your request. "

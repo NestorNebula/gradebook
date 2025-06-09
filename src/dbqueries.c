@@ -50,6 +50,8 @@ Class_p *find_classes(bool with_students, bool with_tests) {
       classes = resized;
       size *= 2;
     }
+
+    // Store db class informations into a Class structure
     Class_p class_row = malloc(sizeof(struct class_type));
     if (class_row == NULL) break;
     class_row->id = sqlite3_column_int(stmt, find_column("id", stmt));
@@ -82,6 +84,7 @@ int update_class(Class_p class_p) {
 }
 
 int delete_class(Class_p class_p) {
+  // Delete grades linked to students/tests that will be deleted
   sprintf(sql, "DELETE FROM grades WHERE student_id IN "
           "(SELECT id FROM students WHERE class_id = %d) OR test_id IN "
           "(SELECT id FROM tests WHERE class_id = %d);",
@@ -92,6 +95,7 @@ int delete_class(Class_p class_p) {
     return rc;
   }
 
+  // Delete class' tests
   sprintf(sql, "DELETE FROM tests WHERE class_id = %d;", class_p->id);
   rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
   if (errmsg != NULL) {
@@ -99,6 +103,7 @@ int delete_class(Class_p class_p) {
     return rc;
   }
 
+  // Delete class' students
   sprintf(sql, "DELETE FROM students WHERE class_id = %d;", class_p->id);
   rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
   if (errmsg != NULL) {
@@ -131,6 +136,7 @@ Student_p *find_students(Id *class_id, bool with_grades) {
   sqlite3_stmt *stmt;
   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 
+  // Store db student informations into a Student structure
   Student_p *students = malloc(sizeof(Student_p) * DEF_ARR_SIZE);
   if (students == NULL) return students;
   int length = 0, size = DEF_ARR_SIZE;
@@ -174,6 +180,7 @@ int update_student(Student_p student_p) {
 }
 
 int delete_student(Student_p student_p) {
+  // Delete student's grades
   sprintf(sql, "DELETE FROM grades WHERE student_id = %d;", student_p->id);
   int rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
   if (errmsg != NULL) {
@@ -209,6 +216,7 @@ Test_p *find_tests(Id *class_id, bool with_grades) {
   sqlite3_stmt *stmt;
   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 
+  // Store db test informations into a Test structure
   Test_p *tests_arr = malloc(sizeof(Test_p) * DEF_ARR_SIZE);
   if (tests_arr == NULL) return tests_arr;
   int length = 0, size = DEF_ARR_SIZE;
@@ -256,6 +264,7 @@ int update_test(Test_p test_p) {
 }
 
 int delete_test(Test_p test_p) {
+  // Delete test's grades
   sprintf(sql, "DELETE FROM grades WHERE test_id = %d;", test_p->id);
   int rc = sqlite3_exec(db, sql, NULL, NULL, &errmsg);
   if (errmsg != NULL) {
@@ -296,6 +305,7 @@ Grade_p *find_grades(Id *student_id, Id *test_id) {
   sqlite3_stmt *stmt;
   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 
+  // Store db grade informations into a Grade structure
   Grade_p *grades = malloc(sizeof(Grade_p) * DEF_ARR_SIZE);
   if (grades == NULL) return grades;
   int length = 0, size = DEF_ARR_SIZE;
