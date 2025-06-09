@@ -132,7 +132,7 @@ int u_test(void) {
   if (read_string(new_description, ML_TEST_DESCRIPTION+1, stdin)) {
     strcpy(test_p->description, new_description);
   } else if (test_p->description[0] != '\0') {
-    printf("Clear previous description (y/n): ");
+    printf("Clear previous description (y/n) ? ");
     if (read_answer(stdin)) {
       strcpy(test_p->description, "");
     }
